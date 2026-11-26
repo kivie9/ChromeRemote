@@ -1,0 +1,18 @@
+# Chrome binaries (portable build - qua nang, khong day len Git)
+chrome/
+*.zip
+
+# Du lieu profile ca nhan (cookie, lich su dang nhap, mat khau - TUYET DOI KHONG PUSH)
+ChromeMCPProfiles/ProfileData/
+
+# Shortcut .lnk duoc tao tu dong theo duong dan may cuc bo
+*.lnk
+
+# Danh sach tai khoan ca nhan (dung profiles.example.csv lam mau)
+ChromeMCPProfiles/profiles.csv
+ChromeMCPProfiles/tao ho so.txt
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+desktop.ini
