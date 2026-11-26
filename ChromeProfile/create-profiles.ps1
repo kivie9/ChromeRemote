@@ -4,7 +4,7 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 $ScriptDir      = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RootDir        = Split-Path -Parent $ScriptDir
 $CsvPath        = Join-Path $ScriptDir "profiles.csv"
-$ChromeExe      = Join-Path $RootDir "chrome\chrome.exe"
+$ChromePathFile = Join-Path $ScriptDir "chrome-path.txt"
 $UserDataDir    = Join-Path $ScriptDir "ProfileData"
 $DebugPort      = 9222
 $Lang           = "vi"
@@ -22,6 +22,62 @@ $DefaultColors  = @(
     "#3949AB", # Cham
     "#6D4C41"  # Nau
 )
+
+function Resolve-ChromeExe {
+    param(
+        [string]$CustomPathFile,
+        [string]$RepoRootDir
+    )
+
+    # 1. Uu tien file cau hinh rieng tung may: ChromeProfile\chrome-path.txt
+    if (Test-Path $CustomPathFile) {
+        $customLines = Get-Content -Path $CustomPathFile -Encoding UTF8 | ForEach-Object { $_.Trim() } | Where-Object { $_ -and -not $_.StartsWith("#") }
+        foreach ($line in $customLines) {
+            $candidate = $line.Trim('"').Trim("'")
+            if (Test-Path $candidate) {
+                return [PSCustomObject]@{ Path = (Resolve-Path $candidate).Path; Source = "chrome-path.txt" }
+            } else {
+                Write-Host "[CANH BAO] Duong dan trong chrome-path.txt khong ton tai: $candidate" -ForegroundColor Yellow
+            }
+        }
+    }
+
+    # 2. Ban Chrome portable trong du an (..\chrome\chrome.exe)
+    $portableExe = Join-Path $RepoRootDir "chrome\chrome.exe"
+    if (Test-Path $portableExe) {
+        return [PSCustomObject]@{ Path = (Resolve-Path $portableExe).Path; Source = "Portable (..\chrome\chrome.exe)" }
+    }
+
+    # 3. Tu dong do qua Windows Registry (App Paths)
+    $regKeys = @(
+        "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe",
+        "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe"
+    )
+    foreach ($key in $regKeys) {
+        try {
+            if (Test-Path $key) {
+                $val = (Get-ItemProperty -Path $key -ErrorAction SilentlyContinue).'(default)'
+                if ($val -and (Test-Path $val)) {
+                    return [PSCustomObject]@{ Path = (Resolve-Path $val).Path; Source = "Windows Registry (App Paths)" }
+                }
+            }
+        } catch { }
+    }
+
+    # 4. Cac duong dan cai dat Chrome mac dinh tren Windows
+    $defaultPaths = @(
+        "C:\Program Files\Google\Chrome\Application\chrome.exe",
+        "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        (Join-Path $env:LOCALAPPDATA "Google\Chrome\Application\chrome.exe")
+    )
+    foreach ($p in $defaultPaths) {
+        if ($p -and (Test-Path $p)) {
+            return [PSCustomObject]@{ Path = (Resolve-Path $p).Path; Source = "Windows mac dinh" }
+        }
+    }
+
+    return $null
+}
 
 function Convert-HexToSignedArgb {
     param([string]$Hex)
@@ -62,9 +118,15 @@ if (-not (Test-Path $CsvPath)) {
     exit 1
 }
 
-if (-not (Test-Path $ChromeExe)) {
-    Write-Host "[CANH BAO] Khong tim thay Chrome tai: $ChromeExe" -ForegroundColor Yellow
+$ChromeInfo = Resolve-ChromeExe -CustomPathFile $ChromePathFile -RepoRootDir $RootDir
+if ($null -eq $ChromeInfo) {
+    Write-Host "[LOI] Khong tim thay chrome.exe tren may nay!" -ForegroundColor Red
+    Write-Host "      Hay dat Chrome portable tai: $(Join-Path $RootDir 'chrome\chrome.exe')" -ForegroundColor Yellow
+    Write-Host "      Hoac tao file: $ChromePathFile va dan duong dan chrome.exe vao do." -ForegroundColor Yellow
+    exit 1
 }
+$ChromeExe    = $ChromeInfo.Path
+$ChromeSource = $ChromeInfo.Source
 
 # Kiem tra xem Chromium tai $ChromeExe co dang chay khong
 $ChromeRunning = $false
@@ -117,6 +179,7 @@ $AvatarSpan = $MaxAvatarIndex - $MinAvatarIndex + 1
 $InvalidChars = [System.IO.Path]::GetInvalidFileNameChars()
 
 Write-Host "=== BAT DAU TAO / CAP NHAT CHROME PROFILE SHORTCUT ===" -ForegroundColor Cyan
+Write-Host "Chrome su dung : $ChromeExe  [$ChromeSource]" -ForegroundColor Cyan
 Write-Host "Thu muc du lieu: $UserDataDir" -ForegroundColor Gray
 if ($ChromeRunning) {
     Write-Host "[CANH BAO] Chromium dang chay! Chi cap nhat shortcut (.lnk), bo qua mau & avatar." -ForegroundColor Yellow

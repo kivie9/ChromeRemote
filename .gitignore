@@ -8,8 +8,9 @@ ChromeProfile/ProfileData/
 # Shortcut .lnk duoc tao tu dong theo duong dan may cuc bo
 *.lnk
 
-# Danh sach tai khoan ca nhan (dung profiles.example.csv lam mau)
+# Danh sach tai khoan va cau hinh rieng tung may
 ChromeProfile/profiles.csv
+ChromeProfile/chrome-path.txt
 ChromeProfile/tao ho so.txt
 
 # OS / Editor

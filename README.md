@@ -30,12 +30,11 @@ ChromeRemote/
    git clone https://github.com/kivie9/ChromeRemote.git
    cd ChromeRemote
    ```
-2. **Đặt bản Chrome vào thư mục `chrome/`:**
-   - Giải nén bản Chrome (hoặc Chrome for Testing / Chromium) vào thư mục `chrome/` sao cho có file `chrome\chrome.exe`.
-   - *(Tuỳ chọn)* Nếu muốn dùng Chrome cài sẵn trên Windows, sửa biến `$ChromeExe` trong `ChromeProfile/create-profiles.ps1` thành:
-     ```powershell
-     $ChromeExe = "C:\Program Files\Google\Chrome\Application\chrome.exe"
-     ```
+2. **Đặt bản Chrome (hoặc dùng Chrome cài sẵn):**
+   - Script `create-profiles.ps1` sẽ **tự động dò `chrome.exe`** theo thứ tự ưu tiên và in rõ đường dẫn Chrome đang dùng ra màn hình:
+     1. `ChromeProfile/chrome-path.txt` *(file riêng từng máy, không lưu trên Git — dán 1 dòng đường dẫn tới `chrome.exe` nếu bạn để Chrome ở thư mục tuỳ chỉnh)*.
+     2. Bản Chrome portable trong dự án: `chrome\chrome.exe`.
+     3. Chrome cài sẵn trên Windows *(tự dò qua Registry và `Program Files` / `Program Files (x86)` / `%LOCALAPPDATA%`)*.
 
 ---
 

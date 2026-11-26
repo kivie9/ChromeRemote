@@ -27,5 +27,9 @@ Bước 3: Đóng hết cửa sổ Chrome (bản trong thư mục ..\chrome\) r�
   (kiểm tra tại: http://127.0.0.1:9222/json/version) để kết nối Chrome DevTools MCP.
 
 4. LƯU Ý
+- Script tự động tìm chrome.exe theo thứ tự:
+  (1) chrome-path.txt  ->  (2) ..\chrome\chrome.exe  ->  (3) Chrome cài sẵn trên Windows.
+  Nếu muốn ép dùng bản Chrome ở thư mục riêng, tạo file chrome-path.txt và dán
+  1 dòng đường dẫn tới chrome.exe vào đó.
 - Không chia sẻ thư mục ProfileData/ (chứa cookie và phiên đăng nhập cá nhân).
 - Nếu Chrome đang mở, script chỉ cập nhật file .lnk và bỏ qua cập nhật màu/avatar.
