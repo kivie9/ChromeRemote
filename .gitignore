@@ -3,14 +3,14 @@ chrome/
 *.zip
 
 # Du lieu profile ca nhan (cookie, lich su dang nhap, mat khau - TUYET DOI KHONG PUSH)
-ChromeMCPProfiles/ProfileData/
+ChromeProfile/ProfileData/
 
 # Shortcut .lnk duoc tao tu dong theo duong dan may cuc bo
 *.lnk
 
 # Danh sach tai khoan ca nhan (dung profiles.example.csv lam mau)
-ChromeMCPProfiles/profiles.csv
-ChromeMCPProfiles/tao ho so.txt
+ChromeProfile/profiles.csv
+ChromeProfile/tao ho so.txt
 
 # OS / Editor
 .DS_Store

@@ -125,10 +125,11 @@ if ($ChromeRunning) {
 Write-Host ""
 
 foreach ($Row in $Rows) {
-    $ShortcutName   = if ($null -ne $Row.TenShortcut) { $Row.TenShortcut.Trim() } else { "" }
-    $ProfileDir     = if ($null -ne $Row.ProfileDir)  { $Row.ProfileDir.Trim() }  else { "" }
-    $RawThemeColor  = if ($null -ne $Row.ThemeColor)  { $Row.ThemeColor.Trim() }  else { "" }
-    $RawAvatarIndex = if ($null -ne $Row.AvatarIndex) { $Row.AvatarIndex.Trim() } else { "" }
+    $RawShortcutName = if ($null -ne $Row.ShortcutName) { $Row.ShortcutName } elseif ($null -ne $Row.TenShortcut) { $Row.TenShortcut } else { "" }
+    $ShortcutName    = $RawShortcutName.Trim()
+    $ProfileDir      = if ($null -ne $Row.ProfileDir)  { $Row.ProfileDir.Trim() }  else { "" }
+    $RawThemeColor   = if ($null -ne $Row.ThemeColor)  { $Row.ThemeColor.Trim() }  else { "" }
+    $RawAvatarIndex  = if ($null -ne $Row.AvatarIndex) { $Row.AvatarIndex.Trim() } else { "" }
 
     # Bo qua dong trong hoac dong ghi chu bat dau bang #
     if ([string]::IsNullOrWhiteSpace($ShortcutName) -or $ShortcutName.StartsWith("#")) {
