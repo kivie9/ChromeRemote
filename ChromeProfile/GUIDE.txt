@@ -1,0 +1,31 @@
+=== HƯỚNG DẪN NHANH THƯ MỤC ChromeProfile ===
+
+1. CÁC FILE TRONG THƯ MỤC
+- profiles.example.csv : File mẫu danh sách profile.
+- profiles.csv         : Danh sách profile cá nhân (tự copy từ file mẫu).
+- CreateProfiles.bat   : Click đúp để tạo / cập nhật nhanh toàn bộ shortcut (.lnk).
+- create-profiles.ps1  : Script xử lý tạo shortcut, tên hiển thị, màu theme và avatar.
+- ProfileData/         : Thư mục lưu cookie, lịch sử đăng nhập của từng profile.
+- *.lnk                : Các shortcut để mở nhanh từng profile Chrome.
+
+2. CÁCH TẠO / THÊM PROFILE MỚI
+Bước 1: Nếu chưa có profiles.csv, copy profiles.example.csv thành profiles.csv.
+Bước 2: Mở profiles.csv (bằng Excel hoặc Notepad) và thêm dòng theo mẫu:
+        ShortcutName,ProfileDir,ThemeColor,AvatarIndex
+        01-account1,Default,#1E88E5,27
+        02-account2,Profile 02,#43A047,28
+        03-account3,,,
+
+        * Có thể để trống ProfileDir, ThemeColor, AvatarIndex để script tự điền.
+Bước 3: Đóng hết cửa sổ Chrome (bản trong thư mục ..\chrome\) rồi click đúp
+        vào CreateProfiles.bat.
+
+3. CÁCH MỞ PROFILE & KẾT NỐI MCP
+- Click đúp vào file shortcut (.lnk) tương ứng để mở profile.
+- Dữ liệu đăng nhập và cookie được lưu riêng tại ProfileData\<ProfileDir>.
+- Mỗi shortcut mặc định mở cổng debug: http://127.0.0.1:9222
+  (kiểm tra tại: http://127.0.0.1:9222/json/version) để kết nối Chrome DevTools MCP.
+
+4. LƯU Ý
+- Không chia sẻ thư mục ProfileData/ (chứa cookie và phiên đăng nhập cá nhân).
+- Nếu Chrome đang mở, script chỉ cập nhật file .lnk và bỏ qua cập nhật màu/avatar.
